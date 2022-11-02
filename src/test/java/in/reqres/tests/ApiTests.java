@@ -13,6 +13,7 @@ import static in.reqres.specs.UsersSpec.successGetUserListResponse;
 import static in.reqres.specs.UsersSpec.successgetUserListRequest;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
@@ -89,7 +90,7 @@ public class ApiTests {
     }
 
     @Test
-    @DisplayName("Получение списка пользователей")
+    @DisplayName("Получение списка пользователей с Groovy")
     public void getUsersList() {
         given()
                 .spec(successgetUserListRequest)
@@ -97,6 +98,7 @@ public class ApiTests {
                 .get()
                 .then()
                 .spec(successGetUserListResponse)
-                .extract();
+                .body("data.findAll{it.email =~/.*?@reqres.in/}.email.flatten()",
+                        hasItem("eve.holt@reqres.in"));
     }
 }
